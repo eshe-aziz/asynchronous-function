@@ -36,12 +36,22 @@ async function fetchAndLogUserData() {
 // The Promise resolves if the task is successful and rejects if there's an error.
 // Write a function that calls performTask() and logs a custom success message if the task is successful, and a custom error message if there's an error.
 
-// async function performTask(){
-//     try
-// }
-
-
-
+async function performTask() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve('Task completed successfully');
+    }, 1000);
+  });
+}
+async function handleTask() {
+  try {
+    const result = await performTask();
+    console.log(`Success: ${result}`);
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+  }
+}
+handleTask();
 
 
 
@@ -70,6 +80,20 @@ function unstableTask(taskName, failureProbability) {
         }
     })
 }
+
+async function executeWithRetry(taskName, retries, failureProbability) {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      await unstableTask(taskName, failureProbability);
+      console.log(`Attempt ${attempt}: Task "${taskName}" succeeded`);
+      return;
+    } catch (error) {
+      console.error(`Attempt ${attempt}: ${error.message}`);
+    }
+  }
+  console.log(`All ${retries} attempts failed for task "${taskName}"`);
+}
+executeWithRetry('Data Processing', 3, 0.3);
 
 
 
